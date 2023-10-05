@@ -16,7 +16,6 @@ no-chat-reports
 pick-up-notifier
 presence-footsteps
 puzzles-lib
-resource-pack-overrides
 xaeros-world-map
 xaeros-minimap
 zoomify
@@ -60,7 +59,6 @@ lilac
 lithium
 main-menu-credits
 make_bubbles_pop
-malilib
 memoryleakfix
 midnightcontrols
 midnightlib
@@ -70,10 +68,8 @@ morechathistory
 mouse-wheelie
 no-unused-chunks
 optigui
-physicsmod
 plasmo-voice
 puzzle
-raised
 raised
 rbip
 reeses-sodium-options
@@ -87,7 +83,6 @@ starlight
 status-effect-bars
 stendhal
 threadtweak
-tweakeroo
 visuality
 wdmgslt
 yacl

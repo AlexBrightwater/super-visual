@@ -15,7 +15,7 @@ def download_mod(mod_identifier, modloader_version, minecraft_version):
     versions_url = f"{base_url}/project/{mod_identifier}/version?facets=[['versions:{minecraft_version}'],['loader:{modloader_version}']]"
     response = requests.get(versions_url)
     if response.status_code != 200:
-        return f"Error: Unable to fetch mod versions for {mod_identifier}. Status code: {response.status_code}"
+        return f"\033[91mError: Unable to fetch mod versions for {mod_identifier}. Status code: {response.status_code}\033[0m"
 
     versions = response.json()
 
@@ -25,14 +25,14 @@ def download_mod(mod_identifier, modloader_version, minecraft_version):
     ]
 
     if not filtered_versions:
-        return f"Error: No compatible mod version found for {mod_identifier}."
+        return f"\033[91mError: No compatible mod version found for {mod_identifier}.\033[0m"
 
     # Download the mod JAR file
     download_url = filtered_versions[0]['files'][0]['url']
     jar_response = requests.get(download_url)
 
     if jar_response.status_code != 200:
-        return f"Error: Unable to download {mod_identifier}. Status code: {jar_response.status_code}"
+        return f"\033[91mError: Unable to download {mod_identifier}. Status code: {jar_response.status_code}\033[0m"
 
     # Create directory if it doesn't exist
     if not os.path.exists('./downloads/latest'):
@@ -56,7 +56,8 @@ try:
     with open(args.modlist, "r") as f:
         mod_identifiers = f.readlines()
 except FileNotFoundError:
-    print(f"Error: File {args.modlist} not found.")
+    print(f"\033[91mError: File {args.modlist} not found.\033[0m")
+    #print(f"Error: File {args.modlist} not found.")
     sys.exit(1)
 
 # Remove any leading or trailing whitespace from each mod identifier
