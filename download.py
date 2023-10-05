@@ -3,9 +3,9 @@ import argparse
 import os
 import sys
 
-def download_mod(mod_identifier, modloader_version, minecraft_version):
+def download_mod(mod_identifier, modloader_version, minecraft_version, download_folder):
     # Check if file already exists
-    if os.path.exists(f"./downloads/latest/{mod_identifier}.jar"):
+    if os.path.exists(f"./downloads/{download_folder}/{mod_identifier}.jar"):
         return f"{mod_identifier}.jar already exists. Skipping download."
 
     # Base URL for Modrinth API
@@ -35,11 +35,11 @@ def download_mod(mod_identifier, modloader_version, minecraft_version):
         return f"\033[91mError: Unable to download {mod_identifier}. Status code: {jar_response.status_code}\033[0m"
 
     # Create directory if it doesn't exist
-    if not os.path.exists('./downloads/latest'):
-        os.makedirs('./downloads/latest')
+    if not os.path.exists(f'./downloads/{download_folder}'):
+        os.makedirs(f'./downloads/{download_folder}')
 
     # Save the JAR file
-    with open(f"./downloads/latest/{mod_identifier}.jar", "wb") as f:
+    with open(f"./downloads/{download_folder}/{mod_identifier}.jar", "wb") as f:
         f.write(jar_response.content)
 
     return f"Successfully downloaded {mod_identifier}.jar"
@@ -51,13 +51,15 @@ parser.add_argument('--mc_version', type=str, default='1.20.1', help='Minecraft 
 parser.add_argument('--modlist', type=str, default='mods.list', help='File containing list of mods to download')
 args = parser.parse_args()
 
+# Construct the download folder name
+download_folder = f"latest_{args.loader}_{args.mc_version}"
+
 # Read mod identifiers from specified file
 try:
     with open(args.modlist, "r") as f:
         mod_identifiers = f.readlines()
 except FileNotFoundError:
     print(f"\033[91mError: File {args.modlist} not found.\033[0m")
-    #print(f"Error: File {args.modlist} not found.")
     sys.exit(1)
 
 # Remove any leading or trailing whitespace from each mod identifier
@@ -68,7 +70,7 @@ failed_downloads = []
 
 # Download each mod
 for mod_identifier in mod_identifiers:
-    result = download_mod(mod_identifier, args.loader, args.mc_version)
+    result = download_mod(mod_identifier, args.loader, args.mc_version, download_folder)
     print(result)
 
     if "Error" in result:
@@ -76,7 +78,7 @@ for mod_identifier in mod_identifiers:
 
 # Write failed downloads to log
 if failed_downloads:
-    with open("./downloads/latest.log", "w") as f:
+    with open(f"./downloads/{download_folder}.log", "w") as f:
         for entry in failed_downloads:
             f.write(f"{entry}\n")
 
