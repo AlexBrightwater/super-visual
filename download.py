@@ -3,6 +3,9 @@ import argparse
 import os
 import sys
 
+# Directory where mod lists are located
+mod_list_directory = "mod-lists"
+
 def download_mod(mod_identifier, modloader_version, minecraft_version, download_folder):
     # Check if file already exists
     if os.path.exists(f"./downloads/{download_folder}/{mod_identifier}.jar"):
@@ -54,12 +57,12 @@ args = parser.parse_args()
 # Construct the download folder name
 download_folder = f"latest_{args.loader}_{args.mc_version}"
 
-# Read mod identifiers from specified file
+# Read mod identifiers from specified file in the mod-lists directory
 try:
-    with open(args.modlist, "r") as f:
+    with open(f"{mod_list_directory}/{args.modlist}", "r") as f:
         mod_identifiers = f.readlines()
 except FileNotFoundError:
-    print(f"\033[91mError: File {args.modlist} not found.\033[0m")
+    print(f"\033[91mError: File {mod_list_directory}/{args.modlist} not found.\033[0m")
     sys.exit(1)
 
 # Remove any leading or trailing whitespace from each mod identifier

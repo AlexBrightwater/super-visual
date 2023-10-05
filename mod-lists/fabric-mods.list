@@ -15,7 +15,6 @@ cem
 cloth-config
 eating-animation
 essential
-fabric-api
 fabric-language-kotlin
 fabricskyboxes
 fallingleaves
@@ -24,7 +23,6 @@ fabricskyboxes-interop
 hold-that-chunk
 horsestatsvanilla
 lazy-language-loader
-light-overlay
 lithium
 mouse-wheelie
 no-unused-chunks
@@ -38,10 +36,8 @@ starlight
 stendhal
 wdmgslt
 modernfix
-chat-reporting-helper
 clean-tooltips
 dripsounds-fabric
 not-enough-animations
 weaponmaster
 easy-shulker-boxes
-smooth-swapping
