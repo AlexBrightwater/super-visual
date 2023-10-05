@@ -9,4 +9,4 @@ This script downloads the latest versions of minecraft mods based off a few para
 python3 download.py --loader fabric --mc_version 1.20.1 --modlist mods.list
 ```
 # Mod List file
-Just store one mod per line in this file without blank lines. Take the name from the URL of the mod's modrinth page or use it's project_id.h
+Just store one mod per line in this file without blank lines. Take the name from the URL of the mod's modrinth page or use it's project_id.
