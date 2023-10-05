@@ -9,4 +9,5 @@ This script downloads the latest versions of minecraft mods based off a few para
 python3 download.py --loader fabric --mc_version 1.20.1 --modlist mods.list
 ```
 ## Mod List file
+The file is expected to be in a dir called mod-lists, but that can be changed through the var mod_list_directory at top of the script.  
 Just store one mod per line in this file without blank lines. Take the name from the URL of the mod's modrinth page or use it's project_id.
