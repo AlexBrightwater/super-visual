@@ -71,14 +71,24 @@ mod_identifiers = [mod.strip() for mod in mod_identifiers]
 # Initialize log for failed downloads
 failed_downloads = []
 
+# Initialize a variable to keep track of the length of the last printed message
+last_message_length = 0
+
 # Download each mod
 for mod_identifier in mod_identifiers:
     result = download_mod(mod_identifier, args.loader, args.mc_version, download_folder)
-    print(result)
 
     if "Error" in result:
+        print(result)
         failed_downloads.append(result)
+    else:
+        # Clear the last printed message
+        print(" " * last_message_length, end="\r")
 
+        # Print the new message and update the length of the last printed message
+        print(result, end="\r")
+        last_message_length = len(result)
+        
 # Write failed downloads to log
 if failed_downloads:
     with open(f"./downloads/{download_folder}.log", "w") as f:
