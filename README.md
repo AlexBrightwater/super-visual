@@ -1,3 +1,5 @@
+# Super Visual Modpack
+This is the GitHub Repo for Super Visual, a Modrinth Modpack. This repo focuses on the automatisation part of the modpack creation, ut also stores some static files that need a place to live :) 
 # downlaod.py
 This script downloads the latest versions of minecraft mods based off a few parameters.
 ## Options
