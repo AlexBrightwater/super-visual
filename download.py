@@ -34,8 +34,11 @@ def download_mod(mod_identifier, modloader_version, minecraft_version, download_
 
     with open(f"./downloads/{download_folder}/{mod_prefix}{mod_identifier}.jar", "wb") as f:
         f.write(jar_response.content)
-
-    return f"Successfully downloaded {modloader_version.upper()} mod: {mod_prefix}{mod_identifier}.jar"
+    
+    if modloader_version == "quilt":
+        return f"Successfully downloaded {modloader_version.upper()}" + "  mod: " + f"{mod_prefix}{mod_identifier}.jar"
+    else:
+        return f"Successfully downloaded {modloader_version.upper()} mod: {mod_prefix}{mod_identifier}.jar"
 
 parser = argparse.ArgumentParser(description='Download mods from Modrinth.')
 parser.add_argument('--loader', type=str, default='fabric', help='Mod loader (e.g., fabric, forge)')
