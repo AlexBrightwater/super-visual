@@ -34,7 +34,7 @@ def download_mod(mod_identifier, modloader_version, minecraft_version, download_
 
     with open(f"./downloads/{download_folder}/{mod_prefix}{mod_identifier}.jar", "wb") as f:
         f.write(jar_response.content)
-    
+
     if modloader_version == "quilt":
         return f"Successfully downloaded {modloader_version.upper()}" + "  mod: " + f"{mod_prefix}{mod_identifier}.jar"
     else:
@@ -58,6 +58,14 @@ except FileNotFoundError:
 
 mod_identifiers = [mod.strip() for mod in mod_identifiers]
 failed_downloads = []
+
+# Check if basemods list file exists for the loader
+basemods_file = f"{mod_list_directory}/{args.loader}-basemods.list"
+if os.path.exists(basemods_file):
+    with open(basemods_file, "r") as f:
+        basemods_identifiers = f.readlines()
+    basemods_identifiers = [mod.strip() for mod in basemods_identifiers]
+    mod_identifiers.extend(basemods_identifiers)  # Add basemods to the list
 
 for mod_identifier in mod_identifiers:
     mod_prefix = 'Q_' if args.loader == 'quilt' else 'F_'
