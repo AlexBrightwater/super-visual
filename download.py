@@ -3,6 +3,10 @@ import argparse
 import os
 import sys
 
+# ANSI color escape codes
+RED = '\033[91m'
+ENDC = '\033[0m'
+
 # Directory where mod lists are located
 mod_list_directory = "mod-lists"
 
@@ -57,7 +61,8 @@ try:
     with open(f"{mod_list_directory}/{args.modlist}", "r") as f:
         mod_identifiers = f.readlines()
 except FileNotFoundError:
-    print(f"Error: File {mod_list_directory}/{args.modlist} not found.")
+    error_message = f"Error: File {mod_list_directory}/{args.modlist} not found."
+    print(f"{RED}{error_message}{ENDC}")
     sys.exit(1)
 
 mod_identifiers = [mod.strip() for mod in mod_identifiers]
@@ -81,7 +86,7 @@ for mod_identifier in mod_identifiers:
 
     if result is None:
         error_message = f"Error: No compatible mod version found for {mod_identifier}."
-        print(error_message)
+        print(f"{RED}{error_message}{ENDC}")
         failed_downloads.append(error_message)
     else:
         print(result)
