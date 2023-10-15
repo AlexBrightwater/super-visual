@@ -45,9 +45,13 @@ parser.add_argument('--loader', type=str, default='fabric', help='Mod loader (e.
 parser.add_argument('--mc_version', type=str, default='1.20.1', help='Minecraft version (e.g., 1.20.1)')
 parser.add_argument('--modlist', type=str, default='mods.list', help='File containing list of mods to download')
 parser.add_argument('--use_fabric', action='store_true', help='Use Fabric as fallback if mod download with initial loader fails')
+parser.add_argument('--name', type=str, help='Custom download directory name')
 args = parser.parse_args()
 
-download_folder = f"latest_{args.loader}_{args.mc_version}"
+if args.name:
+    download_folder = args.name
+else:
+    download_folder = f"latest_{args.loader}_{args.mc_version}"
 
 try:
     with open(f"{mod_list_directory}/{args.modlist}", "r") as f:
