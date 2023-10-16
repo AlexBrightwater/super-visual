@@ -47,7 +47,8 @@ def download_mod(mod_identifier, modloader_version, minecraft_version, download_
 parser = argparse.ArgumentParser(description='Download mods from Modrinth.')
 parser.add_argument('--loader', type=str, default='fabric', help='Mod loader (e.g., fabric, forge)')
 parser.add_argument('--mc_version', type=str, default='1.20.1', help='Minecraft version (e.g., 1.20.1)')
-parser.add_argument('--modlist', type=str, default='mods.list', help='File containing list of mods to download')
+parser.add_argument('--mod', type=str, help='Single mod to download')
+parser.add_argument('--modlist', type=str, help='File containing list of mods to download')
 parser.add_argument('--use_fabric', action='store_true', help='Use Fabric as fallback if mod download with initial loader fails')
 parser.add_argument('--name', type=str, help='Custom download directory name')
 args = parser.parse_args()
@@ -57,24 +58,30 @@ if args.name:
 else:
     download_folder = f"latest_{args.loader}_{args.mc_version}"
 
-try:
-    with open(f"{mod_list_directory}/{args.modlist}", "r") as f:
-        mod_identifiers = f.readlines()
-except FileNotFoundError:
-    error_message = f"Error: File {mod_list_directory}/{args.modlist} not found."
-    print(f"{RED}{error_message}{ENDC}")
-    sys.exit(1)
+mod_identifiers = []
+
+if args.mod:
+    mod_identifiers.append(args.mod)
+elif args.modlist:
+    try:
+        with open(f"{mod_list_directory}/{args.modlist}", "r") as f:
+            mod_identifiers = f.readlines()
+    except FileNotFoundError:
+        error_message = f"Error: File {mod_list_directory}/{args.modlist} not found."
+        print(f"{RED}{error_message}{ENDC}")
+        sys.exit(1)
 
 mod_identifiers = [mod.strip() for mod in mod_identifiers]
 failed_downloads = []
 
-# Check if basemods list file exists for the loader
-basemods_file = f"{mod_list_directory}/{args.loader}-basemods.list"
-if os.path.exists(basemods_file):
-    with open(basemods_file, "r") as f:
-        basemods_identifiers = f.readlines()
-    basemods_identifiers = [mod.strip() for mod in basemods_identifiers]
-    mod_identifiers.extend(basemods_identifiers)  # Add basemods to the list
+# Check if basemods list file exists for the loader when using --modlist
+if args.modlist:
+    basemods_file = f"{mod_list_directory}/{args.loader}-basemods.list"
+    if os.path.exists(basemods_file):
+        with open(basemods_file, "r") as f:
+            basemods_identifiers = f.readlines()
+        basemods_identifiers = [mod.strip() for mod in basemods_identifiers]
+        mod_identifiers += basemods_identifiers  # Add basemods to the list
 
 for mod_identifier in mod_identifiers:
     mod_prefix = 'Q_' if args.loader == 'quilt' else 'F_'
