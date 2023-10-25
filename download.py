@@ -13,16 +13,33 @@ mod_list_directory = "mod-lists"
 def download_mod(mod_identifier, modloader_version, minecraft_version, download_folder, mod_prefix):
     base_url = "https://api.modrinth.com/v2"
 
-    versions_url = f"{base_url}/project/{mod_identifier}/version?facets=[['versions:{minecraft_version}'],['loader:{modloader_version}']]"
-    response = requests.get(versions_url)
+    #https://api.modrinth.com/v2/project/sodium/version?loaders=["fabric"]&game_versions=["1.20.1"]
+    if modloader_version not in globals():
+        versions_url = f"{base_url}/project/{mod_identifier}/version?game_versions=[\"{minecraft_version}\"]"
+        print("RESOURCEPACK")
+        response = requests.get(versions_url)
+        print(versions_url)
 
-    if response.status_code != 200:
-        return None
+        if response.status_code != 200:
+            return None
 
-    versions = response.json()
-    filtered_versions = [
-        v for v in versions if modloader_version in v['loaders'] and minecraft_version in v['game_versions']
-    ]
+        versions = response.json()
+        filtered_versions = [
+            v for v in versions if minecraft_version in v['game_versions']
+        ]
+    else:
+        versions_url = f"{base_url}/project/{mod_identifier}/version?loaders=[\"{modloader_version}\"]&game_versions=[\"{minecraft_version}\"]"
+        response = requests.get(versions_url)
+        print(versions_url)
+
+        if response.status_code != 200:
+            return None
+
+        versions = response.json()
+        filtered_versions = [
+            v for v in versions if modloader_version in v['loaders'] and minecraft_version in v['game_versions']
+        ]
+
 
     if not filtered_versions:
         return None
@@ -36,13 +53,22 @@ def download_mod(mod_identifier, modloader_version, minecraft_version, download_
     if not os.path.exists(f'./downloads/{download_folder}'):
         os.makedirs(f'./downloads/{download_folder}')
 
-    with open(f"./downloads/{download_folder}/{mod_prefix}{mod_identifier}.jar", "wb") as f:
-        f.write(jar_response.content)
-
-    if modloader_version == "quilt":
-        return f"Successfully downloaded {modloader_version.upper()}" + "  mod: " + f"{mod_prefix}{mod_identifier}.jar"
+    if modloader_version not in globals():
+        with open(f"./downloads/{download_folder}/{mod_prefix}{mod_identifier}.zip", "wb") as f:
+            f.write(jar_response.content)
+        if modloader_version == "quilt":
+            return f"Successfully downloaded {modloader_version.upper()}" + "  mod: " + f"{mod_prefix}{mod_identifier}.zip"
+        else:
+            return f"Successfully downloaded {modloader_version.upper()} mod: {mod_prefix}{mod_identifier}.zip"
     else:
-        return f"Successfully downloaded {modloader_version.upper()} mod: {mod_prefix}{mod_identifier}.jar"
+        with open(f"./downloads/{download_folder}/{mod_prefix}{mod_identifier}.jar", "wb") as f:
+            f.write(jar_response.content)
+        if modloader_version == "quilt":
+            return f"Successfully downloaded {modloader_version.upper()}" + "  mod: " + f"{mod_prefix}{mod_identifier}.jar"
+        else:
+            return f"Successfully downloaded {modloader_version.upper()} mod: {mod_prefix}{mod_identifier}.jar"
+
+    
 
 parser = argparse.ArgumentParser(description='Download mods from Modrinth.')
 parser.add_argument('--loader', type=str, default='fabric', help='Mod loader (e.g., fabric, forge)')
