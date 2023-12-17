@@ -60,7 +60,6 @@ def main():
     parser.add_argument('--modlist', type=str, help='File containing list of mods to download')
     parser.add_argument('--tex', type=str, help='Single Resourcepack to download')
     parser.add_argument('--texlist', type=str, help='File containing list of Resource Packs to download')
-    parser.add_argument('--use_fabric', action='store_true', help='Use Fabric as fallback if mod download with initial loader fails')
     parser.add_argument('--name', type=str, help='Custom download directory name')
     args = parser.parse_args()
 
@@ -71,10 +70,10 @@ def main():
     if args.mod:
         identifiers.append(args.mod)
         item_type = "mod"
-    elif args.modlist:
+    if args.modlist:
         try:
             with open(f"{args.modlist}", "r") as f:
-                identifiers = f.readlines()
+                identifiers = [line.strip() for line in f if line.strip()]
             item_type = "mod"
         except FileNotFoundError:
             error_message = f"Error: File {args.modlist} not found."
@@ -83,10 +82,10 @@ def main():
     elif args.tex:
         identifiers.append(args.tex)
         item_type = "tex"
-    elif args.texlist:
+    if args.texlist:
         try:
             with open(f"{args.texlist}", "r") as f:
-                identifiers = f.readlines()
+                identifiers = [line.strip() for line in f if line.strip()]
             item_type = "tex"
         except FileNotFoundError:
             error_message = f"Error: File {args.texlist} not found."
@@ -107,9 +106,6 @@ def main():
             suffix = "fabric"
             
         result = download_file(identifier, args.loader, args.mc_version, download_folder, suffix, item_type)
-        if result is None and args.use_fabric and item_type == "mod":
-            suffix = 'fabric'  # Changed this line to fix the issue
-            result = download_file(identifier, 'fabric', args.mc_version, download_folder, suffix, item_type)
         if result is None:
             error_message = f"Error: No compatible {item_type} version found for {identifier}."
             print(f"{RED}{error_message}{ENDC}")
