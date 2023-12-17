@@ -6,6 +6,7 @@ import sys
 
 # ANSI color escape codes
 RED = '\033[91m'
+GREEN = '\033[92m'  # Added for successful download messages
 ENDC = '\033[0m'
 
 BASE_URL = "https://api.modrinth.com/v2"
@@ -94,6 +95,8 @@ def main():
 
     identifiers = [identifier.strip() for identifier in identifiers]
     failed_downloads = []
+    success_count = 0  # Counter for successful downloads
+    fail_count = 0     # Counter for failed download
 
     for identifier in identifiers:
         if args.loader == 'quilt':
@@ -110,13 +113,24 @@ def main():
             error_message = f"Error: No compatible {item_type} version found for {identifier}."
             print(f"{RED}{error_message}{ENDC}")
             failed_downloads.append(error_message)
+            fail_count += 1
         else:
             print(result)
+            success_count += 1
 
+    # Print summary with conditional "s" for pluralization
+    success_plural = '' if success_count < 2 else 's'
+    fail_plural = '' if fail_count < 2 else 's'
+
+    print("\nDownload Summary:")
+    print(f"{GREEN}Successfully downloaded: {success_count} {item_type}{success_plural}{ENDC}")
+    print(f"{RED}Failed downloads: {fail_count} {item_type}{fail_plural}{ENDC}")
     if failed_downloads:
         with open(f"./downloads/{download_folder}.log", "w") as f:
             for entry in failed_downloads:
                 f.write(f"{entry}\n")
+        print(f"Check downloads/{download_folder}.log for more details.")
+        
 
 if __name__ == "__main__":
     main()
