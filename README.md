@@ -1,54 +1,80 @@
 # Super Visual Modpack
-This is the GitHub Repo for Super Visual, a Modrinth Modpack. This repo focuses on the automatisation part of the modpack creation, it also stores some static files that need a place to live :)
 
-# downlaod.py
-A simple script to download Minecraft mods and resource packs from Modrinth.
+This repository is dedicated to the Super Visual Modpack for Minecraft, featuring a powerful script to automate the modpack creation process. It focuses on downloading mods and resource packs directly from Modrinth, streamlining the modpack assembly.
 
-## Features
+## download.py
+An enhanced Python script for efficiently downloading Minecraft mods and resource packs from Modrinth.
 
-- Download individual mods or resource packs by project_id or slug.
-- Batch download mods or resource packs using a list.
-- Best used with Fabric or Quilt.
-- Error logging for failed downloads.
+### Key Features
 
-## Usage
+- Download mods and resource packs by project_id or slug.
+- Supports batch downloads through list files.
+- Compatible with all modloaders.
+- Error logging and download report.
 
-### Required Arguments:
+### How to Use
 
-- `--mc_version`: The Minecraft version for which you want to download the mod or resource pack. (Default is `1.20.1`)
+#### Arguments:
 
-### Optional Arguments:
+- `--mc_version`: Specify the Minecraft version for the mods/resource packs. Default: `1.20.1`.
+- `--loader`: Choose the mod loader (`fabric`, `forge`, `quilt`, or `neo-forge`). Default: `fabric`.
+- `--mod`: Identifier for a single mod download.
+- `--modlist`: File containing mod identifiers for batch download.
+- `--tex`: Identifier for a single resource pack download.
+- `--texlist`: File containing resource pack identifiers for batch download.
+- `--name`: Custom name for the download directory. Default: `latest_<loader>_<mc_version>`
 
-- `--loader`: Choose the mod loader (either `fabric` or `forge`). Default is `fabric`.
-- `--mod`: Specify the identifier of a single mod to download.
-- `--modlist`: Specify a file containing a list of mod identifiers to download.
-- `--tex`: Specify the identifier of a single resource pack to download.
-- `--texlist`: Specify a file containing a list of resource pack identifiers to download.
-- `--use_fabric`: Use this flag to fallback to Fabric if the mod download with the initial loader fails.
-- `--name`: Custom name for the download directory.
+#### Usage Examples:
 
-### Example Commands:
+1. Download a single mod with Fabric:
+```bash
+python3 download.py --mod mod_identifier
+```
+2. Batch download mods with Quilt loader:
+```bash
+python3 download.py --loader quilt --modlist lists/mod_list_file.txt
+```
 
-1. Download a single mod for Fabric loader:
-   ```
-   python3 download.py --mod mod_identifier
-   ```
+3. Download resource packs to a custom directory:
+```bash
+python3 download.py --texlist lists/texture_pack_list_file.list --name custom_texture_folder
+```
 
-2. Download mods from a list for Quilt loader and falling back to fabric if no quilt version is available:
-   ```
-   python3 download.py --loader quilt --modlist lists/mod_list_file.txt --use_fabric
-   ```
+### Additional Notes:
 
-3. Download resource packs from a list and use a custom download folder name:
-   ```
-   python3 download.py --texlist lists/texture_pack_list_file.list --name texture_collection
-   ```
+Mods and resource packs are saved in `./downloads/{download_folder}`.  
+File names for mods include a suffix based on the loader (e.g., mod_identifier_fabric.jar).  
+Resource packs are saved with a .zip extension.  
+Failed downloads are logged in `./downloads/{download_folder}.log`.  
+List files should contain one identifier per line.  
 
-## Notes:
+# syncpack.sh
+This is just a personal wrapper copying config files to make them available for the `buildpack.sh` script.
 
-- Mods are saved with a prefix of `F_` for Fabric, `Q_` for Quilt.
-- Resource packs do not have a prefix.
-- The default download directory is `./downloads/latest_{loader}_{mc_version}`.
-- A log file is created in the download directory for any failed downloads.
-- Lists are one id/slug per line
+**⚠️ Warning:**  
+Customize the script before usage.
 
+## buildpack.sh
+
+The buildpack.sh Bash script automates the process of building Super Visual. It includes functionalities for downloading mods using download.py, setting up mod directories, and copying local downloads to the Minecraft instances.
+Customize before use.
+
+### Key Features
+
+- Automates mod downloads for specified Minecraft versions.
+- Creates necessary directories if they don't exist.
+- Copies downloaded and locally available mods, resource packs, and shaders to the respective Minecraft instance folders.
+
+### How to Use
+
+Run the script with the desired Minecraft versions as command-line arguments:
+
+```bash
+./buildpack.sh 1.19.4 
+```
+This script will handle downloading, directory setup, and file copying for each specified version.
+Files/Folders in `./manual-downloads/<version>` must be present.  
+
+
+**⚠️ Warning:**  
+Customize the script before usage.
